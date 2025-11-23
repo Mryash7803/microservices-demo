@@ -43,7 +43,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: emailservice
+        image: us-central1-docker.pkg.dev/dogwood-channel-478619-p7/online-boutique-repo/emailservice:latest
         ports:
         - containerPort: 8080
         env:

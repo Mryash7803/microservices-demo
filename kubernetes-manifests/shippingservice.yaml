@@ -42,7 +42,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: shippingservice
+        image: us-central1-docker.pkg.dev/dogwood-channel-478619-p7/online-boutique-repo/shippingservice:latest
         ports:
         - containerPort: 50051
         env:

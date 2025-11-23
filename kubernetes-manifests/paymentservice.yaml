@@ -43,7 +43,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: paymentservice
+        image: us-central1-docker.pkg.dev/dogwood-channel-478619-p7/online-boutique-repo/paymentservice:latest
         ports:
         - containerPort: 50051
         env:

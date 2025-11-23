@@ -43,7 +43,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: adservice
+        image: us-central1-docker.pkg.dev/dogwood-channel-478619-p7/online-boutique-repo/adservice:latest
         ports:
         - containerPort: 9555
         env:
