@@ -22,22 +22,16 @@
 
 # USAGE:
 # GCP zone and GKE target cluster must be specified as substitutions
-# Example invocation:
-# `gcloud builds submit --config=cloudbuild.yaml --substitutions=_ZONE=us-central1-b,_CLUSTER=demo-app-staging .`
-
+# Example i  - >
 steps:
-- id: 'Deploy application to cluster'
-  name: 'gcr.io/k8s-skaffold/skaffold:v2.16.1'
-  entrypoint: 'bash'
-  args:
-  - '-c'
-  - >
-    gcloud container clusters get-credentials --zone=$_ZONE $_CLUSTER;
-    skaffold run -f=skaffold.yaml --default-repo=gcr.io/$PROJECT_ID;
+# Step 1: Build the frontend image (Simulating one service for brevity)
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/frontend:$COMMIT_SHA', './src/frontend']
 
-# Add more power, and more time, for heavy Skaffold build
-timeout: '3600s'
-options:
-  machineType: 'N1_HIGHCPU_8'
-  
-# [END cloudbuild_microservice_demo_cloudbuild]
+# Step 2: Push the image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/frontend:$COMMIT_SHA']
+
+# Step 3: Update Kubernetes Manifests (The GitOps way)
+# Real companies don't use 'kubectl apply' in CI. They update a manifest repo.
+# For this lab, we will use a simple substitution or just rely on 'latest' for the dem
