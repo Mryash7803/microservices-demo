@@ -1,16 +1,21 @@
 steps:
-  # --- Build Microservices (SEQUENTIAL / SAFE MODE) ---
+  # --- Debug Step: Prove the file exists ---
+  - name: 'ubuntu'
+    args: ['find', '.', '-name', 'Dockerfile']
+    id: 'Locate Dockerfiles'
+
+  # --- Build Microservices (SEQUENTIAL) ---
   
-  # 1. Frontend (PASSED)
+  # 1. Frontend
   - name: 'gcr.io/cloud-builders/docker'
     env: ['DOCKER_BUILDKIT=1']
     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/frontend:latest', './src/frontend']
     id: 'Build Frontend'
 
-  # 2. CartService (FIXED: Added -f flag for correct Dockerfile path)
+  # 2. CartService (FIXED: Using ROOT context and explicit path)
   - name: 'gcr.io/cloud-builders/docker'
     env: ['DOCKER_BUILDKIT=1']
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/cartservice:latest', '-f', './src/cartservice/src/Dockerfile', './src/cartservice']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/cartservice:latest', '-f', 'src/cartservice/src/Dockerfile', '.']
     id: 'Build CartService'
 
   # 3. ProductCatalogService
