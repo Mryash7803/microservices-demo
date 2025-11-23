@@ -1,14 +1,93 @@
-steps: 
-
-- name: 'gcr.io/cloud-builders/docker'
+steps:
+  # --- Build All Microservices in Parallel (With BuildKit Enabled) ---
+  
+  # 1. Frontend
+  - name: 'gcr.io/cloud-builders/docker'
     env: ['DOCKER_BUILDKIT=1']
-  args: ['build' , '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/frontend:latest', './src/frontend']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/frontend:latest', './src/frontend']
+    id: 'Build Frontend'
+    waitFor: ['-']
 
-# Step 2: Push the image to Artifact Registry
-- name: 'gcr.io/cloud-builders/docker'
+  # 2. CartService
+  - name: 'gcr.io/cloud-builders/docker'
     env: ['DOCKER_BUILDKIT=1']
-  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/frontend:latest']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/cartservice:latest', './src/cartservice']
+    id: 'Build CartService'
+    waitFor: ['-']
 
+  # 3. ProductCatalogService
+  - name: 'gcr.io/cloud-builders/docker'
+    env: ['DOCKER_BUILDKIT=1']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/productcatalogservice:latest', './src/productcatalogservice']
+    id: 'Build ProductCatalog'
+    waitFor: ['-']
+
+  # 4. CurrencyService
+  - name: 'gcr.io/cloud-builders/docker'
+    env: ['DOCKER_BUILDKIT=1']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/currencyservice:latest', './src/currencyservice']
+    id: 'Build Currency'
+    waitFor: ['-']
+
+  # 5. PaymentService
+  - name: 'gcr.io/cloud-builders/docker'
+    env: ['DOCKER_BUILDKIT=1']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/paymentservice:latest', './src/paymentservice']
+    id: 'Build Payment'
+    waitFor: ['-']
+
+  # 6. ShippingService
+  - name: 'gcr.io/cloud-builders/docker'
+    env: ['DOCKER_BUILDKIT=1']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/shippingservice:latest', './src/shippingservice']
+    id: 'Build Shipping'
+    waitFor: ['-']
+
+  # 7. EmailService
+  - name: 'gcr.io/cloud-builders/docker'
+    env: ['DOCKER_BUILDKIT=1']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/emailservice:latest', './src/emailservice']
+    id: 'Build Email'
+    waitFor: ['-']
+
+  # 8. CheckoutService
+  - name: 'gcr.io/cloud-builders/docker'
+    env: ['DOCKER_BUILDKIT=1']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/checkoutservice:latest', './src/checkoutservice']
+    id: 'Build Checkout'
+    waitFor: ['-']
+
+  # 9. RecommendationService
+  - name: 'gcr.io/cloud-builders/docker'
+    env: ['DOCKER_BUILDKIT=1']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/recommendationservice:latest', './src/recommendationservice']
+    id: 'Build Recommendation'
+    waitFor: ['-']
+
+  # 10. AdService
+  - name: 'gcr.io/cloud-builders/docker'
+    env: ['DOCKER_BUILDKIT=1']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/adservice:latest', './src/adservice']
+    id: 'Build AdService'
+    waitFor: ['-']
+
+  # --- Push All Images ---
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/frontend:latest &
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/cartservice:latest &
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/productcatalogservice:latest &
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/currencyservice:latest &
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/paymentservice:latest &
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/shippingservice:latest &
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/emailservice:latest &
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/checkoutservice:latest &
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/recommendationservice:latest &
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/adservice:latest &
+        wait
 
 options:
   logging: CLOUD_LOGGING_ONLY
