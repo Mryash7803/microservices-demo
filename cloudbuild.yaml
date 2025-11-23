@@ -1,9 +1,4 @@
 steps:
-  # --- Debug Step: Prove the file exists ---
-  - name: 'ubuntu'
-    args: ['find', '.', '-name', 'Dockerfile']
-    id: 'Locate Dockerfiles'
-
   # --- Build Microservices (SEQUENTIAL) ---
   
   # 1. Frontend
@@ -12,10 +7,10 @@ steps:
     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/frontend:latest', './src/frontend']
     id: 'Build Frontend'
 
-  # 2. CartService (FIXED: Using ROOT context and explicit path)
+  # 2. CartService (FIXED: Context set to inner src folder)
   - name: 'gcr.io/cloud-builders/docker'
     env: ['DOCKER_BUILDKIT=1']
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/cartservice:latest', '-f', 'src/cartservice/src/Dockerfile', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/online-boutique-repo/cartservice:latest', './src/cartservice/src']
     id: 'Build CartService'
 
   # 3. ProductCatalogService
